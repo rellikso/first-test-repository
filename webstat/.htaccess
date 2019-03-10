@@ -1,0 +1,7 @@
+AuthType Basic
+AuthName "/www/omega.promodex.org/webstat"
+AuthUserFile /var/www/promodex/data/etc/100562.passwd
+DirectoryIndex index.html
+<Limit GET POST>
+	require valid-user
+</Limit>

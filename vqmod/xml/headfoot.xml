@@ -1,0 +1,160 @@
+<modification>
+<id>Вывести на все страницы + разместить в шапке/подвале</id>
+ <version>1.0.0</version>
+<vqmver>2.x</vqmver>
+ <author>OSKiller</author>
+<file name="admin/language/english/module/*.php">
+ <operation>
+<search position="before">
+<![CDATA[ // Entry ]]>
+</search>
+ <add>
+<![CDATA[ $_['text_content_header'] = 'Header';$_['text_content_footer'] = 'Footer';$_['text_all_pages'] = 'On all pages'; ]]></add>
+</operation>
+</file>
+<file name="admin/language/russian/module/*.php">
+ <operation>
+<search position="before">
+<![CDATA[ // Entry ]]>
+</search>
+ <add>
+<![CDATA[
+$_['text_content_header'] = 'Шапка';
+$_['text_content_footer'] = 'Подвал';
+$_['text_all_pages'] = 'На все страницы';
+]]>
+</add>
+</operation>
+</file>
+<file name="admin/controller/module/*.php">
+ <operation>
+<search position="after">
+<![CDATA[ $this->data['text_column_right'] = $this->language->get('text_column_right'); ]]>
+</search>
+ <add>
+<![CDATA[
+$this->data['text_content_header'] = $this->language->get('text_content_header');
+$this->data['text_content_footer'] = $this->language->get('text_content_footer');
+]]>
+</add>
+</operation>
+ <operation>
+<search position="after">
+<![CDATA[ $this->data['layouts'] = $this->model_design_layout->getLayouts(); ]]>
+</search>
+ <add>
+<![CDATA[ $this->data['layouts'][] = array('layout_id'=>0, 'name' => $this->language->get('text_all_pages') ); ]]></add>
+</operation>
+</file>
+
+<file name="admin/view/template/module/*.tpl">
+ <operation>
+<search position="before">
+<![CDATA[ if ($module['position'] == 'content_top') ]]>
+</search>
+ <add>
+<![CDATA[
+<?php if ($module['position'] == 'content_header') { ?>
+<option value="content_header" selected="selected"><?php echo $text_content_header; ?></option>
+<?php } else { ?>
+<option value="content_header"><?php echo $text_content_header; ?></option>
+<?php } ?>
+ ]]></add>
+</operation>
+ <operation>
+<search position="before">
+<![CDATA[ if ($module['position'] == 'column_left') ]]>
+</search>
+ <add>
+<![CDATA[
+<?php if ($module['position'] == 'content_footer') { ?>
+<option value="content_footer" selected="selected"><?php echo $text_content_footer; ?></option>
+<?php } else { ?>
+<option value="content_footer"><?php echo $text_content_footer; ?></option>
+<?php } ?>
+ ]]></add>
+</operation>
+ <operation>
+<search position="before">
+<![CDATA[ html += '      <option value="content_top"><?php echo $text_content_top; ?></option>'; ]]>
+</search>
+ <add>
+<![CDATA[ html += '      <option value="content_header"><?php echo $text_content_header; ?></option>'; ]]></add>
+</operation>
+ <operation>
+<search position="after">
+<![CDATA[ html += '      <option value="content_bottom"><?php echo $text_content_bottom; ?></option>'; ]]>
+</search>
+ <add>
+<![CDATA[ html += '      <option value="content_footer"><?php echo $text_content_footer; ?></option>'; ]]></add>
+</operation>
+</file>
+
+<file name="catalog/controller/common/header.php">
+ <operation>
+<search position="before">
+<![CDATA[ if (file_exists(DIR_TEMPLATE . $this->config->get('config_template') . '/template/common/header.tpl')) ]]>
+</search>
+ <add>
+<![CDATA[ $this->children[] = 'common/content_header'; ]]>
+</add> </operation>
+</file>
+<file name="catalog/controller/common/content_header.php">
+ <operation>
+<search position="replace">
+<![CDATA[ if ($module['layout_id'] == $layout_id && $module['position'] == 'content_header' && $module['status']) ]]>
+</search>
+ <add>
+<![CDATA[ if (($module['layout_id'] == $layout_id || $module['layout_id'] == '0' ) && $module['position'] == 'content_header' && $module['status']) ]]></add>
+</operation>
+</file>
+<file name="catalog/controller/common/content_bottom.php">
+ <operation>
+<search position="replace">
+<![CDATA[ if ($module['layout_id'] == $layout_id && $module['position'] == 'content_bottom' && $module['status']) ]]>
+</search>
+ <add>
+<![CDATA[ if (($module['layout_id'] == $layout_id || $module['layout_id'] == '0' ) && $module['position'] == 'content_bottom' && $module['status']) ]]></add> </operation>
+</file>
+<file name="catalog/controller/common/content_top.php">
+ <operation>
+<search position="replace">
+<![CDATA[ if ($module['layout_id'] == $layout_id && $module['position'] == 'content_top' && $module['status']) ]]>
+</search>
+ <add>
+<![CDATA[ if (($module['layout_id'] == $layout_id || $module['layout_id'] == '0' ) && $module['position'] == 'content_top' && $module['status']) ]]></add> </operation>
+</file>
+<file name="catalog/controller/common/content_footer.php">
+ <operation>
+<search position="replace">
+<![CDATA[ if ($module['layout_id'] == $layout_id && $module['position'] == 'content_footer' && $module['status']) ]]>
+</search>
+ <add>
+<![CDATA[ if (($module['layout_id'] == $layout_id || $module['layout_id'] == '0' ) && $module['position'] == 'content_footer' && $module['status']) ]]></add> </operation>
+</file>
+<file name="catalog/controller/common/footer.php">
+ <operation>
+<search position="before">
+<![CDATA[ if (file_exists(DIR_TEMPLATE . $this->config->get('config_template') . '/template/common/footer.tpl')) ]]>
+</search>
+ <add>
+<![CDATA[ $this->children[] = 'common/content_footer'; ]]>
+</add> </operation>
+</file>
+<file name="catalog/controller/common/column_left.php">
+ <operation>
+<search position="replace">
+<![CDATA[ if ($module['layout_id'] == $layout_id && $module['position'] == 'column_left' && $module['status']) ]]>
+</search>
+ <add>
+<![CDATA[ if (($module['layout_id'] == $layout_id || $module['layout_id'] == '0' ) && $module['position'] == 'column_left' && $module['status']) ]]></add> </operation>
+</file>
+<file name="catalog/controller/common/column_right.php">
+ <operation>
+<search position="replace">
+<![CDATA[ if ($module['layout_id'] == $layout_id && $module['position'] == 'column_right' && $module['status']) ]]>
+</search>
+ <add>
+<![CDATA[ if (($module['layout_id'] == $layout_id || $module['layout_id'] == '0' ) && $module['position'] == 'column_right' && $module['status']) ]]></add> </operation>
+</file>
+ </modification>
